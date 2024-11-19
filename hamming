@@ -1,0 +1,68 @@
+import java.util.Scanner;
+
+public class hamming {
+
+    public static int[] encode(int[] data) {
+        int[] encoded = new int[7];
+        encoded[2] = data[0];  
+        encoded[4] = data[1];  
+        encoded[5] = data[2];  
+        encoded[6] = data[3];  
+        encoded[0] = encoded[2] ^ encoded[4] ^ encoded[6]; 
+        encoded[1] = encoded[2] ^ encoded[5] ^ encoded[6]; 
+        encoded[3] = encoded[4] ^ encoded[5] ^ encoded[6]; 
+        return encoded;
+    }
+
+    public static int[] decode(int[] encoded) {
+        int p1 = encoded[0] ^ encoded[2] ^ encoded[4] ^ encoded[6];
+        int p2 = encoded[1] ^ encoded[2] ^ encoded[5] ^ encoded[6];
+        int p3 = encoded[3] ^ encoded[4] ^ encoded[5] ^ encoded[6];
+        int errorPosition = p1 * 1 + p2 * 2 + p3 * 4;
+        if (errorPosition != 0) {
+            System.out.println("Error detected at position: " + errorPosition);
+            encoded[errorPosition - 1] = encoded[errorPosition - 1] == 0 ? 1 : 0;
+            System.out.println("Error corrected.");
+        } else {
+            System.out.println("No error detected.");
+        }
+        return new int[]{encoded[2], encoded[4], encoded[5], encoded[6]};
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter 4-bit binary data (e.g., 1011): ");
+        String input = scanner.nextLine();
+        if (input.length() != 4 || !input.matches("[01]+")) {
+            System.out.println("Invalid input. Please enter exactly 4 binary digits.");
+            return;
+        }
+        int[] data = new int[4];
+        for (int i = 0; i < 4; i++) {
+            data[i] = input.charAt(i) - '0';  
+        }
+        int[] encodedData = encode(data);
+        System.out.print("Encoded Hamming code: ");
+        for (int bit : encodedData) {
+            System.out.print(bit + " ");
+        }
+        System.out.println();
+        System.out.print("Enter the received 7-bit Hamming code: ");
+        String receivedInput = scanner.nextLine();
+        if (receivedInput.length() != 7 || !receivedInput.matches("[01]+")) {
+            System.out.println("Invalid received data. Please enter exactly 7 binary digits.");
+            return;
+        }
+        int[] receivedData = new int[7];
+        for (int i = 0; i < 7; i++) {
+            receivedData[i] = receivedInput.charAt(i) - '0';  
+        }
+        int[] decodedData = decode(receivedData);
+        System.out.print("Decoded data: ");
+        for (int bit : decodedData) {
+            System.out.print(bit + " ");
+        }
+        System.out.println();
+        scanner.close();
+    }
+}
