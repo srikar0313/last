@@ -1,0 +1,54 @@
+import java.util.Scanner;
+
+public class Checksum {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the message to send: ");
+        String message = scanner.nextLine();
+
+        int checksum = calculateChecksum(message);
+        System.out.println("Calculated Checksum: " + checksum);
+
+        String transmittedMessage = message + "|" + checksum;
+        System.out.println("Transmitted Message: " + transmittedMessage);
+
+        System.out.print("Enter the received message: ");
+        String receivedMessage = scanner.nextLine();
+
+        if (validateChecksum(receivedMessage)) {
+            System.out.println("Received message is correct.");
+        } else {
+            System.out.println("Received message is corrupted.");
+        }
+        scanner.close();
+    }
+
+    public static int calculateChecksum(String input) {
+        int checksum = 0;
+
+        for (char ch : input.toCharArray()) {
+            checksum += ch; // Add ASCII values of the characters
+        }
+
+        checksum = checksum % 256; // Keep checksum within byte range
+        return checksum;
+    }
+
+       public static boolean validateChecksum(String receivedMessage) {
+        try {
+            // Split the message and the checksum
+            String[] parts = receivedMessage.split("\\|");
+            String message = parts[0];
+            int receivedChecksum = Integer.parseInt(parts[1]);
+    
+            // Recalculate the checksum and compare
+            return calculateChecksum(message) == receivedChecksum;
+        } catch (Exception e) {
+            // Handle invalid formats or errors gracefully
+            System.out.println("Invalid message or checksum format!");
+            return false;
+        }
+    }
+
+}
