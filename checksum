@@ -28,24 +28,20 @@ public class Checksum {
         int checksum = 0;
 
         for (char ch : input.toCharArray()) {
-            checksum += ch; // Add ASCII values of the characters
+            checksum += ch; 
         }
 
-        checksum = checksum % 256; // Keep checksum within byte range
+        checksum = checksum % 256; 
         return checksum;
     }
-
        public static boolean validateChecksum(String receivedMessage) {
         try {
-            // Split the message and the checksum
+            
             String[] parts = receivedMessage.split("\\|");
             String message = parts[0];
             int receivedChecksum = Integer.parseInt(parts[1]);
-    
-            // Recalculate the checksum and compare
             return calculateChecksum(message) == receivedChecksum;
         } catch (Exception e) {
-            // Handle invalid formats or errors gracefully
             System.out.println("Invalid message or checksum format!");
             return false;
         }
