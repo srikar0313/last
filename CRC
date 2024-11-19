@@ -1,0 +1,35 @@
+import java.util.Scanner;
+
+public class CRC{
+
+    public static String calculateCRC(String data, String divisor) {
+        StringBuilder remainder = new StringBuilder(data);
+        for (int i = 0; i <= remainder.length() - divisor.length(); i++) {
+            if (remainder.charAt(i) == '1') {
+                for (int j = 0; j < divisor.length(); j++) {
+                    remainder.setCharAt(i + j, (remainder.charAt(i + j) == divisor.charAt(j)) ? '0' : '1');
+                }
+            }
+        }
+        return remainder.substring(remainder.length() - divisor.length() + 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter binary data: ");
+        String data = scanner.nextLine();
+
+        System.out.print("Enter binary divisor: ");
+        String divisor = scanner.nextLine();
+
+        String crc = calculateCRC(data + "0".repeat(divisor.length() - 1), divisor);
+        String sentData = data + crc;
+        System.out.println("Sent Data: " + sentData);
+
+        System.out.print("Enter received data: ");
+        String receivedData = scanner.nextLine();
+
+        System.out.println("Is valid: " + calculateCRC(receivedData, divisor).equals("0".repeat(divisor.length() - 1)));
+    }
+}
